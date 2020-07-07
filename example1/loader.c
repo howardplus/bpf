@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <unistd.h>
 #include <bpf_load.h>
 
 int main(int argc, char **argv) {
@@ -8,7 +9,19 @@ int main(int argc, char **argv) {
         return -1;
     }
 
-    read_trace_pipe();
+//    read_trace_pipe();
+
+    while (1) {
+        int key = 0;
+        int value;
+        int ret = bpf_map_lookup_elem(map_fd[0], &key, &value);
+        if (ret)
+            printf("error lookup key %d\n", key);
+        else
+            printf("current value = %d\n", value);
+
+        sleep(1);
+    }
 
     return 0;
 }
